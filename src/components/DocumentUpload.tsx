@@ -3,13 +3,19 @@ import { Upload, FileText, CheckCircle, Brain } from 'lucide-react';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
 import { documentService } from '../services/documentService';
-import type { FinancialData } from '../App';
+import { agentService } from '../services/agentService';
 
 interface DocumentUploadProps {
-  onDocumentProcessed: (data: FinancialData) => void;
+  onDocumentProcessed: (documentId: string) => void;
+  isCompact?: boolean;
+  existingDocuments?: number;
 }
 
-export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProcessed }) => {
+export const DocumentUpload: React.FC<DocumentUploadProps> = ({ 
+  onDocumentProcessed, 
+  isCompact = false,
+  existingDocuments = 0 
+}) => {
   const { user } = useAuth();
   const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -17,7 +23,9 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
   const [agentStatus, setAgentStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
   React.useEffect(() => {
-    checkAgentStatus();
+    if (!isCompact) {
+      checkAgentStatus();
+    }
   }, []);
 
   const checkAgentStatus = async () => {
@@ -52,51 +60,28 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
       const processingResult = await documentService.processDocument(uploadResult.documentId);
       console.log('Document processed:', processingResult);
       
-      // Simulate processing steps for better UX
-      const steps = [
-        'Extracting financial data...',
-        'Running debt analysis agent...',
-        'Calculating savings opportunities...',
-        'Generating budget recommendations...',
-        'Creating personalized insights...'
-      ];
-      
-      for (let i = 0; i < steps.length; i++) {
-        setProcessingStep(steps[i]);
+      if (processingResult.success) {
+        setProcessingStep('Triggering AI agent analysis...');
+        
+        // Trigger agent analysis
+        try {
+          await agentService.analyzeDocument(uploadResult.documentId);
+          setProcessingStep('Analysis complete!');
+        } catch (agentError) {
+          console.warn('Agent analysis failed:', agentError);
+          setProcessingStep('Document processed (agents offline)');
+        }
+        
+        // Wait a moment before completing
         await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        setIsProcessing(false);
+        onDocumentProcessed(uploadResult.documentId);
+      } else {
+        throw new Error(processingResult.error || 'Processing failed');
       }
 
-      // Generate mock data for now (replace with real data from agents)
-      const mockData: FinancialData = {
-        totalIncome: 75000,
-        totalExpenses: 65000,
-        totalDebt: 35000,
-        totalSavings: 12000,
-        monthlyBudget: 6000,
-        creditScore: 720,
-        expenses: [
-          { category: 'Housing', amount: 2500, percentage: 38 },
-          { category: 'Transportation', amount: 800, percentage: 12 },
-          { category: 'Food', amount: 600, percentage: 9 },
-          { category: 'Utilities', amount: 300, percentage: 5 },
-          { category: 'Entertainment', amount: 400, percentage: 6 },
-          { category: 'Healthcare', amount: 200, percentage: 3 },
-          { category: 'Other', amount: 1200, percentage: 18 }
-        ],
-        debts: [
-          { type: 'Credit Card', amount: 8500, interestRate: 18.9, minPayment: 250 },
-          { type: 'Student Loan', amount: 22000, interestRate: 5.2, minPayment: 220 },
-          { type: 'Auto Loan', amount: 4500, interestRate: 3.8, minPayment: 180 }
-        ],
-        savingsGoals: [
-          { name: 'Emergency Fund', target: 20000, current: 12000, deadline: '2025-12-31' },
-          { name: 'House Down Payment', target: 50000, current: 8000, deadline: '2027-06-30' },
-          { name: 'Vacation Fund', target: 5000, current: 1200, deadline: '2025-08-15' }
-        ]
-      };
 
-      setIsProcessing(false);
-      onDocumentProcessed(mockData);
 
     } catch (error) {
       console.error('Document processing error:', error);
@@ -130,6 +115,47 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleFileUpload(e.target.files);
   };
+
+  // Compact version for "Upload More" button
+  if (isCompact) {
+    return (
+      <div className="relative">
+        <input
+          type="file"
+          multiple
+          accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx"
+          onChange={handleFileInputChange}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          disabled={isProcessing}
+        />
+        <button 
+          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-500 to-blue-600 text-white rounded-lg hover:from-yellow-600 hover:to-blue-700 transition-colors duration-200 font-medium disabled:opacity-50"
+          disabled={isProcessing}
+        >
+          {isProcessing ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+              Processing...
+            </>
+          ) : (
+            <>
+              <Upload className="w-4 h-4 mr-2" />
+              Upload More Files ({existingDocuments} uploaded)
+            </>
+          )}
+        </button>
+        
+        {isProcessing && (
+          <div className="absolute top-full left-0 mt-2 bg-gray-900 border border-gray-700 rounded-lg p-3 min-w-64 z-10">
+            <div className="flex items-center space-x-2">
+              <Brain className="w-4 h-4 text-yellow-500 animate-pulse" />
+              <span className="text-sm text-yellow-500">{processingStep}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (isProcessing) {
     return (
@@ -165,28 +191,30 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
           </p>
           
           {/* Agent Status Indicator */}
-          <div className="mt-4 flex items-center justify-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${
-              agentStatus === 'online' ? 'bg-green-500' :
-              agentStatus === 'offline' ? 'bg-red-400' :
-              'bg-blue-500 animate-pulse'
-            }`}></div>
-            <span className="text-sm text-gray-300">
-              AI Agents: {
-                agentStatus === 'online' ? 'Online & Ready' :
-                agentStatus === 'offline' ? 'Offline' :
-                'Checking Status...'
-              }
-            </span>
-            {agentStatus === 'offline' && (
-              <button 
-                onClick={checkAgentStatus}
-                className="text-xs text-blue-400 hover:text-blue-300 underline ml-2"
-              >
-                Retry
-              </button>
-            )}
-          </div>
+          {!isCompact && (
+            <div className="mt-4 flex items-center justify-center space-x-2">
+              <div className={`w-3 h-3 rounded-full ${
+                agentStatus === 'online' ? 'bg-green-500' :
+                agentStatus === 'offline' ? 'bg-red-400' :
+                'bg-blue-500 animate-pulse'
+              }`}></div>
+              <span className="text-sm text-gray-300">
+                AI Agents: {
+                  agentStatus === 'online' ? 'Online & Ready' :
+                  agentStatus === 'offline' ? 'Offline' :
+                  'Checking Status...'
+                }
+              </span>
+              {agentStatus === 'offline' && (
+                <button 
+                  onClick={checkAgentStatus}
+                  className="text-xs text-blue-400 hover:text-blue-300 underline ml-2"
+                >
+                  Retry
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div
@@ -232,7 +260,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
               Supported formats: PDF, DOC, TXT, CSV, XLS
               <br />
               Maximum file size: 10MB per file
-              {agentStatus === 'offline' && (
+              {!isCompact && agentStatus === 'offline' && (
                 <div className="text-red-400 mt-2">
                   ⚠️ AI Agents are offline. Please ensure the Python agents server is running.
                 </div>
@@ -242,7 +270,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
         </div>
 
         {/* Security Notice */}
-        <div className="mt-8 bg-green-900/20 border border-green-600 rounded-lg p-4">
+        {!isCompact && <div className="mt-8 bg-green-900/20 border border-green-600 rounded-lg p-4">
           <div className="flex items-center">
             <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
             <div className="text-sm">
@@ -253,7 +281,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
             </div>
           </div>
         </div>
-      </div>
+        </div>}
     </section>
   );
 };
