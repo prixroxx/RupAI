@@ -154,16 +154,16 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
     return (
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-            <div className="animate-spin w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-6"></div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Processing Your Financial Data</h3>
+          <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-2xl p-8 shadow-xl">
+            <div className="animate-spin w-16 h-16 border-4 border-gray-600 border-t-blue-500 rounded-full mx-auto mb-6"></div>
+            <h3 className="text-2xl font-bold text-white mb-4">Processing Your Financial Data</h3>
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Brain className="w-5 h-5 text-blue-600 animate-pulse" />
               <p className="text-blue-600 font-medium">{processingStep}</p>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-700 rounded-full h-2">
               <div 
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-blue-600 to-blue-800 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${(processingStep ? 1 : 0) * 100 / 6}%` }}
               ></div>
             </div>
@@ -177,8 +177,8 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
     <section className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Upload Your Financial Documents</h2>
-          <p className="text-lg text-gray-600">
+          <h2 className="text-3xl font-bold text-white mb-4">Upload Your Financial Documents</h2>
+          <p className="text-lg text-gray-300">
             Upload bank statements, credit reports, pay stubs, or any financial documents. 
             Our AI will analyze and provide personalized insights.
           </p>
@@ -187,10 +187,10 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
           <div className="mt-4 flex items-center justify-center space-x-2">
             <div className={`w-3 h-3 rounded-full ${
               agentStatus === 'online' ? 'bg-green-500' :
-              agentStatus === 'offline' ? 'bg-red-500' :
-              'bg-yellow-500 animate-pulse'
+              agentStatus === 'offline' ? 'bg-red-400' :
+              'bg-blue-500 animate-pulse'
             }`}></div>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-gray-300">
               AI Agents: {
                 agentStatus === 'online' ? 'Online & Ready' :
                 agentStatus === 'offline' ? 'Offline' :
@@ -200,7 +200,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
             {agentStatus === 'offline' && (
               <button 
                 onClick={checkAgentStatus}
-                className="text-xs text-blue-600 hover:text-blue-800 underline ml-2"
+                className="text-xs text-blue-400 hover:text-blue-300 underline ml-2"
               >
                 Retry
               </button>
@@ -211,8 +211,8 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
         <div
           className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-200 ${
             isDragOver
-              ? 'border-blue-400 bg-blue-50/50'
-              : 'border-gray-300 bg-white/50 hover:border-blue-300 hover:bg-blue-50/30'
+              ? 'border-blue-400 bg-blue-900/20'
+              : 'border-gray-600 bg-gray-900/50 hover:border-blue-500 hover:bg-blue-900/30'
           }`}
           onDrop={handleDrop}
           onDragOver={(e) => {
@@ -230,15 +230,15 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
           />
           
           <div className="space-y-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto">
               <Upload className="w-8 h-8 text-white" />
             </div>
             
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2">
                 Drag and drop your files here
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-300 mb-4">
                 or click to browse your computer
               </p>
               <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
@@ -247,12 +247,12 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
               </button>
             </div>
             
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-400">
               Supported formats: PDF, DOC, TXT, CSV, XLS
               <br />
               Maximum file size: 10MB per file
               {agentStatus === 'offline' && (
-                <div className="text-red-500 mt-2">
+                <div className="text-red-400 mt-2">
                   ⚠️ AI Agents are offline. Please ensure the Python agents server is running.
                 </div>
               )}
@@ -261,12 +261,12 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
         </div>
 
         {/* Security Notice */}
-        <div className="mt-8 bg-green-50 border border-green-200 rounded-lg p-4">
+        <div className="mt-8 bg-green-900/20 border border-green-600 rounded-lg p-4">
           <div className="flex items-center">
-            <CheckCircle className="w-5 h-5 text-green-600 mr-3" />
+            <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
             <div className="text-sm">
-              <p className="font-medium text-green-800">Your data is secure</p>
-              <p className="text-green-600">
+              <p className="font-medium text-green-300">Your data is secure</p>
+              <p className="text-green-400">
                 All documents are encrypted and processed locally. We never store your financial information.
               </p>
             </div>

@@ -48,10 +48,10 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading RupAI...</p>
+          <div className="w-16 h-16 border-4 border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading RupAI...</p>
         </div>
       </div>
     );
@@ -62,7 +62,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <Header user={user} />
       
       {!hasUploadedDocument ? (
@@ -75,7 +75,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Navigation Tabs */}
             <div className="mb-8">
-              <nav className="flex space-x-1 bg-white/70 backdrop-blur-sm rounded-xl p-1 shadow-lg">
+              <nav className="flex space-x-1 bg-black/70 backdrop-blur-sm rounded-xl p-1 shadow-lg border border-gray-700">
                 {[
                   { key: 'dashboard', label: 'Financial Dashboard' },
                   { key: 'agents', label: 'AI Agents' },
@@ -87,7 +87,7 @@ function App() {
                     className={`flex-1 px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                       activeTab === tab.key
                         ? 'bg-blue-600 text-white shadow-md'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-white/50'
+                        : 'text-gray-300 hover:text-blue-400 hover:bg-gray-800/50'
                     }`}
                   >
                     {tab.label}
