@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Upload, FileText, CheckCircle, Brain } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
-import { agentService } from '../services/agentService';
+import { documentService } from '../services/documentService';
 import type { FinancialData } from '../App';
 
 interface DocumentUploadProps {
@@ -42,57 +42,15 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
     try {
       const file = files[0];
       
-      // Check if Supabase is configured and try to upload
-      let documentId = `demo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Upload document using document service
+      const uploadResult = await documentService.uploadDocument(file, user.id);
+      console.log('Document uploaded:', uploadResult);
       
-      if (isSupabaseConfigured() && supabase) {
-        try {
-          // Try to upload file to Supabase Storage
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${Math.random()}.${fileExt}`;
-          const filePath = `${user.id}/${fileName}`;
-
-          const { error: uploadError } = await supabase.storage
-            .from('documents')
-            .upload(filePath, file);
-
-          if (uploadError) {
-            console.warn('Storage upload failed:', uploadError.message);
-            // Continue with demo mode if storage fails
-          } else {
-            // Create document record if upload succeeded
-            const { data: document, error: docError } = await supabase
-              .from('financial_documents')
-              .insert({
-                user_id: user.id,
-                filename: file.name,
-                file_type: file.type,
-                file_size: file.size,
-                upload_status: 'pending'
-              })
-              .select()
-              .single();
-
-            if (!docError && document) {
-              documentId = document.id;
-            }
-          }
-        } catch (error) {
-          console.warn('Supabase operation failed, continuing with demo mode:', error);
-        }
-      }
-
-      // Try to process with Python agents (works with or without Supabase)
-      setProcessingStep('Analyzing document with AI agents...');
+      setProcessingStep('Processing document content...');
       
-      try {
-        const analysisResult = await agentService.analyzeDocument(documentId);
-        console.log('Agent analysis result:', analysisResult);
-      } catch (agentError) {
-        console.warn('Agent analysis failed, using demo data:', agentError);
-      }
-      
-      setProcessingStep('Generating insights...');
+      // Process document and extract data
+      const processingResult = await documentService.processDocument(uploadResult.documentId);
+      console.log('Document processed:', processingResult);
       
       // Simulate processing steps for better UX
       const steps = [
@@ -146,10 +104,10 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
       // Provide more helpful error messages
       let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes('Bucket not found')) {
-          errorMessage = 'Storage not configured. Using demo mode for document processing.';
-        } else if (error.message.includes('Failed to fetch')) {
+        if (error.message.includes('Failed to fetch')) {
           errorMessage = 'Cannot connect to AI agents. Please ensure Python agents are running on localhost:8000.';
+        } else if (error.message.includes('Upload failed')) {
+          errorMessage = 'File upload failed. Please check your Supabase storage configuration.';
         } else {
           errorMessage = error.message;
         }

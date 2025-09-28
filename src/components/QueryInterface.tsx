@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send, Bot, User, MessageSquare, TrendingUp, DollarSign, Target } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { agentService } from '../services/agentService';
+import { ragService } from '../services/ragService';
 import type { FinancialData } from '../App';
 
 interface QueryInterfaceProps {
@@ -151,11 +152,20 @@ Could you be more specific about what aspect of your finances you'd like me to a
     setIsTyping(true);
 
     try {
-      // Try to get response from Python agents first
+      // Get RAG context for the query
       let botResponseContent: string;
       
       if (user) {
         try {
+          // First, get relevant context using RAG
+          const ragContext = await ragService.queryDocuments({
+            query: currentInput,
+            userId: user.id,
+            maxResults: 5,
+            threshold: 0.7
+          });
+          
+          // Try to get response from Python agents with RAG context
           botResponseContent = await agentService.chatWithAgents(user.id, currentInput, sessionId);
         } catch (error) {
           console.error('Agent service error:', error);
@@ -177,7 +187,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
       console.error('Error getting bot response:', error);
       const errorMessage: ChatMessage = {
         type: 'bot',
-        content: "I'm sorry, I'm having trouble connecting to my analysis systems right now. Please try again in a moment, or check that the Python agents are running.",
+        content: "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment, or check that all services are running properly.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
