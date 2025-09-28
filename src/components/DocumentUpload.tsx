@@ -81,8 +81,6 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
         throw new Error(processingResult.error || 'Processing failed');
       }
 
-
-
     } catch (error) {
       console.error('Document processing error:', error);
       
@@ -280,8 +278,8 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({
               </p>
             </div>
           </div>
-        </div>
         </div>}
+      </div>
     </section>
   );
 };
