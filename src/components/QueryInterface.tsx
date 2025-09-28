@@ -194,14 +194,14 @@ Could you be more specific about what aspect of your finances you'd like me to a
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-white">
+        <div className="bg-gradient-to-r from-yellow-600 via-yellow-700 to-blue-600 px-6 py-4 text-white">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
               <MessageSquare className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Chat with RupAI</h2>
-              <p className="text-blue-100 text-sm">Your AI Financial Coach is ready to help</p>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-yellow-200 to-white bg-clip-text text-transparent">Chat with RupAI</h2>
+              <p className="text-yellow-100 text-sm">Your AI Financial Coach is ready to help</p>
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
               <div
                 className={`max-w-2xl px-4 py-3 rounded-lg ${
                   message.type === 'user'
-                    ? 'bg-blue-600 text-white ml-12'
+                    ? 'bg-gradient-to-r from-yellow-600 to-blue-600 text-white ml-12'
                     : 'bg-gray-100 text-gray-900'
                 }`}
               >
@@ -233,6 +233,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
                 </div>
                 <div className={`text-xs mt-2 ${
                   message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
+                  message.type === 'user' ? 'text-yellow-100' : 'text-gray-500'
                 }`}>
                   {message.timestamp.toLocaleTimeString()}
                 </div>
@@ -248,7 +249,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
 
           {isTyping && (
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div className="bg-gray-100 px-4 py-3 rounded-lg">
@@ -271,7 +272,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
                 <button
                   key={index}
                   onClick={() => handleSuggestedQuestion(question)}
-                  className="text-left text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-2 rounded-lg transition-colors duration-200 border border-blue-200 hover:border-blue-300"
+                  className="text-left text-sm text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 px-3 py-2 rounded-lg transition-colors duration-200 border border-yellow-200 hover:border-yellow-300"
                 >
                   {question}
                 </button>
@@ -295,7 +296,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
             <button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isTyping}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center space-x-2"
+              className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center space-x-2"
             >
               <Send className="w-5 h-5" />
             </button>
@@ -307,7 +308,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg p-4 shadow border border-gray-100">
           <div className="flex items-center space-x-3">
-            <TrendingUp className="w-8 h-8 text-green-600" />
+            <TrendingUp className="w-8 h-8 text-yellow-600" />
             <div>
               <p className="text-sm text-gray-600">Monthly Surplus</p>
               <p className="text-lg font-bold text-gray-900">
@@ -319,7 +320,7 @@ Could you be more specific about what aspect of your finances you'd like me to a
 
         <div className="bg-white rounded-lg p-4 shadow border border-gray-100">
           <div className="flex items-center space-x-3">
-            <DollarSign className="w-8 h-8 text-blue-600" />
+            <DollarSign className="w-8 h-8 text-yellow-600" />
             <div>
               <p className="text-sm text-gray-600">Debt Payments</p>
               <p className="text-lg font-bold text-gray-900">

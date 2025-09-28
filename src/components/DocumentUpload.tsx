@@ -156,14 +156,14 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-2xl p-8 shadow-xl">
             <div className="animate-spin w-16 h-16 border-4 border-gray-600 border-t-blue-500 rounded-full mx-auto mb-6"></div>
-            <h3 className="text-2xl font-bold text-white mb-4">Processing Your Financial Data</h3>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent mb-4">Processing Your Financial Data</h3>
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <Brain className="w-5 h-5 text-blue-600 animate-pulse" />
-              <p className="text-blue-600 font-medium">{processingStep}</p>
+              <Brain className="w-5 h-5 text-yellow-500 animate-pulse" />
+              <p className="text-yellow-500 font-medium">{processingStep}</p>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
               <div 
-                className="bg-gradient-to-r from-blue-600 to-blue-800 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${(processingStep ? 1 : 0) * 100 / 6}%` }}
               ></div>
             </div>
@@ -177,7 +177,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
     <section className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">Upload Your Financial Documents</h2>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-white bg-clip-text text-transparent mb-4">Upload Your Financial Documents</h2>
           <p className="text-lg text-gray-300">
             Upload bank statements, credit reports, pay stubs, or any financial documents. 
             Our AI will analyze and provide personalized insights.
@@ -230,7 +230,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
           />
           
           <div className="space-y-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 via-yellow-600 to-yellow-700 rounded-full flex items-center justify-center mx-auto">
               <Upload className="w-8 h-8 text-white" />
             </div>
             
@@ -241,7 +241,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
               <p className="text-gray-300 mb-4">
                 or click to browse your computer
               </p>
-              <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+              <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-colors duration-200 font-medium">
                 Choose Files
                 <FileText className="w-4 h-4 ml-2" />
               </button>

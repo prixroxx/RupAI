@@ -16,15 +16,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
   return (
     <div className="space-y-8">
       {/* Financial Health Score */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-r from-yellow-600 via-yellow-700 to-blue-700 rounded-2xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-2">Financial Health Score</h2>
-            <p className="text-blue-100">Based on your income, expenses, debts, and savings</p>
+            <p className="text-yellow-100">Based on your income, expenses, debts, and savings</p>
           </div>
           <div className="text-right">
             <div className="text-4xl font-bold mb-1">{financialHealthScore}</div>
-            <div className="text-sm text-blue-200">out of 100</div>
+            <div className="text-sm text-yellow-200">out of 100</div>
             <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium mt-2 ${
               financialHealthScore >= 80 ? 'bg-green-500 text-white' :
               financialHealthScore >= 60 ? 'bg-yellow-500 text-white' :
@@ -41,8 +41,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-lg flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-yellow-700" />
             </div>
             <TrendingUp className="w-4 h-4 text-green-500" />
           </div>
@@ -80,10 +80,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
 
         <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <PiggyBank className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-lg flex items-center justify-center">
+              <PiggyBank className="w-5 h-5 text-yellow-700" />
             </div>
-            <TrendingUp className="w-4 h-4 text-blue-500" />
+            <TrendingUp className="w-4 h-4 text-yellow-500" />
           </div>
           <div className="text-2xl font-bold text-gray-900 mb-1">
             ${data.totalSavings.toLocaleString()}
@@ -162,7 +162,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+                      className="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2 rounded-full transition-all duration-500"
                       style={{ width: `${Math.min(progress, 100)}%` }}
                     ></div>
                   </div>

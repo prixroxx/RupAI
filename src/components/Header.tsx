@@ -21,13 +21,13 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
           {/* Logo */}
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 via-yellow-600 to-yellow-700 rounded-xl flex items-center justify-center shadow-lg">
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-black"></div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full border-2 border-black"></div>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
                 RupAI
               </h1>
               <p className="text-xs text-gray-400">AI Financial Coach</p>
@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
           {/* Features */}
           <div className="hidden md:flex items-center space-x-6 text-sm text-gray-300">
             <div className="flex items-center space-x-2">
-              <Brain className="w-4 h-4 text-blue-600" />
+              <Brain className="w-4 h-4 text-yellow-500" />
               <span>Multi-Agent AI</span>
             </div>
             <div className="flex items-center space-x-2">

@@ -86,8 +86,8 @@ function App() {
                     onClick={() => setActiveTab(tab.key as any)}
                     className={`flex-1 px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                       activeTab === tab.key
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'text-gray-300 hover:text-blue-400 hover:bg-gray-800/50'
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-md'
+                        : 'text-gray-300 hover:text-yellow-400 hover:bg-gray-800/50'
                     }`}
                   >
                     {tab.label}
