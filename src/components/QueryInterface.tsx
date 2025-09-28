@@ -232,7 +232,6 @@ Could you be more specific about what aspect of your finances you'd like me to a
                   {message.content}
                 </div>
                 <div className={`text-xs mt-2 ${
-                  message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                   message.type === 'user' ? 'text-yellow-100' : 'text-gray-500'
                 }`}>
                   {message.timestamp.toLocaleTimeString()}
