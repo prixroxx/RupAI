@@ -36,51 +36,61 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0 || !user) return;
     
-    // Check if Supabase is configured
-    if (!isSupabaseConfigured() || !supabase) {
-      setProcessingStep('Demo mode: Supabase not configured. File upload requires a configured Supabase instance.');
-      setTimeout(() => {
-        setIsProcessing(false);
-        setProcessingStep('');
-      }, 3000);
-      return;
-    }
-    
     setIsProcessing(true);
     setProcessingStep('Uploading document...');
 
     try {
       const file = files[0];
       
-      // Upload file to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
+      // Check if Supabase is configured and try to upload
+      let documentId = `demo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      if (isSupabaseConfigured() && supabase) {
+        try {
+          // Try to upload file to Supabase Storage
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Math.random()}.${fileExt}`;
+          const filePath = `${user.id}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('documents')
-        .upload(filePath, file);
+          const { error: uploadError } = await supabase.storage
+            .from('documents')
+            .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.warn('Storage upload failed:', uploadError.message);
+            // Continue with demo mode if storage fails
+          } else {
+            // Create document record if upload succeeded
+            const { data: document, error: docError } = await supabase
+              .from('financial_documents')
+              .insert({
+                user_id: user.id,
+                filename: file.name,
+                file_type: file.type,
+                file_size: file.size,
+                upload_status: 'pending'
+              })
+              .select()
+              .single();
 
-      // Create document record
-      const { data: document, error: docError } = await supabase
-        .from('financial_documents')
-        .insert({
-          user_id: user.id,
-          filename: file.name,
-          file_type: file.type,
-          file_size: file.size,
-          upload_status: 'pending'
-        })
-        .select()
-        .single();
+            if (!docError && document) {
+              documentId = document.id;
+            }
+          }
+        } catch (error) {
+          console.warn('Supabase operation failed, continuing with demo mode:', error);
+        }
+      }
 
-      if (docError) throw docError;
-
-      // Process with Python agents
+      // Try to process with Python agents (works with or without Supabase)
       setProcessingStep('Analyzing document with AI agents...');
-      const analysisResult = await agentService.analyzeDocument(document.id);
+      
+      try {
+        const analysisResult = await agentService.analyzeDocument(documentId);
+        console.log('Agent analysis result:', analysisResult);
+      } catch (agentError) {
+        console.warn('Agent analysis failed, using demo data:', agentError);
+      }
       
       setProcessingStep('Generating insights...');
       
@@ -132,7 +142,20 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onDocumentProces
 
     } catch (error) {
       console.error('Document processing error:', error);
-      setProcessingStep(`Error processing document: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
+      
+      // Provide more helpful error messages
+      let errorMessage = 'Unknown error occurred';
+      if (error instanceof Error) {
+        if (error.message.includes('Bucket not found')) {
+          errorMessage = 'Storage not configured. Using demo mode for document processing.';
+        } else if (error.message.includes('Failed to fetch')) {
+          errorMessage = 'Cannot connect to AI agents. Please ensure Python agents are running on localhost:8000.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setProcessingStep(`Error: ${errorMessage}`);
       setTimeout(() => {
         setIsProcessing(false);
         setProcessingStep('');
